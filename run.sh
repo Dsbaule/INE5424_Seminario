@@ -6,10 +6,10 @@ elif [ $1 = "APB" ]; then
     bash run.sh
 elif [ $1 = "ATB" ]; then
     cd ATB
-    bash shell.sh
+    bash run.sh
 elif [ $1 = "AHB" ]; then
     cd AHB
-    bash shell.sh
+    bash run.sh
 else
     echo "Invalid argument, use (APT | ATB | AHB)"
     echo "Example: bash run.sh APT"
