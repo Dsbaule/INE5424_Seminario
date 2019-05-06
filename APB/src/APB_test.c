@@ -44,7 +44,7 @@ void sendData(struct APB_Signals * APB_bus, uint32_t * data, uint32_t address) {
 void readData(struct APB_Signals * APB_bus, uint32_t * data, uint32_t address) {
     while(!readDataMaster(APB_bus, data, address))
         runSlave(APB_bus);
-}S
+}
 
 void c_entry() {
     struct APB_Signals APB_bus;
