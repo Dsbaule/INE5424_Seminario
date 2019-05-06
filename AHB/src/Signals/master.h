@@ -46,21 +46,33 @@ typedef enum {
 template<typename BUS_size=uint32_t>
 struct MasterHADDR
 {
-    BUS_size HADDR;
+    BUS_size HADDR          = 0x10000;
 };
 
 template<typename BUS_size=uint32_t>
-struct MasterSignals : public MasterHADDR
+struct MasterSignals : public MasterHADDR<BUS_size>
 {
     // Control
-    TransferDirection HWRITE;
-    TransferSize HSIZE;
-    BurstOperation HBURST;
+    TransferDirection HWRITE = WRITE;
+    TransferSize HSIZE       = WORD;
+    BurstOperation HBURST    = SINGLE;
+    TransferType HTRANS      = IDLE;
+    LockedTransfer HMASTLOCK = UNLOCKED;
     /* HPROT; */
-    TransferType HTRANS;
-    LockedTransfer HMASTLOCK;
     // Data
-    BUS_size HWDATA;
+    BUS_size HWDATA          = 0xCAFEBABE;
+};
+
+template<typename BUS_size=uint32_t>
+struct Master2Slave {
+    using _MasterSignals = MasterSignals<BUS_size>;
+    virtual _MasterSignals & getMasterSignals() = 0;//operator()
+};
+
+template<typename BUS_size=uint32_t>
+struct Master2Decoder {
+    using _MasterHADDR = MasterHADDR<BUS_size>;
+    virtual _MasterHADDR & getMasterHADDR() = 0;
 };
 
 #endif
