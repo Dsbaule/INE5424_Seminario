@@ -16,13 +16,23 @@ void print_uart0(const char *s) {
         s++; /* Next char */
     }
 }
-
 void print_uint32_uart0(uint32_t value) {
     char string[] = "0000000000";
     for(int i = 9; i >= 0; i--) {
         string[i] = '0' + (value % 10);
         value /= 10;
     }
+    print_uart0(string);
+}
+void prettyPrint(int address, uint32_t value, uint8_t direction) {
+    print_uart0("Data: ");
+    print_uint32_uart0(value);
+    if(direction)
+        print_uart0(" sent to address ");
+    else
+        print_uart0(" received from address ");
+    char string[] = "0\n";
+    string[0] = '0' + address;
     print_uart0(string);
 }
 
@@ -34,32 +44,26 @@ void sendData(struct APB_Signals * APB_bus, uint32_t * data, uint32_t address) {
 void readData(struct APB_Signals * APB_bus, uint32_t * data, uint32_t address) {
     while(!readDataMaster(APB_bus, data, address))
         runSlave(APB_bus);
-}
+}S
 
 void c_entry() {
     struct APB_Signals APB_bus;
 
     uint32_t data = INITIALDATA;
 
+    print_uart0("\n");
+
     for (int i = 0; i < 3; i++) {
         sendData(&APB_bus, &data, i);
-        print_uart0("Data: ");
-        print_uint32_uart0(data);
-        print_uart0(" sent to address ");
-        char string[] = "0\n";
-        string[0] = '0' + i;
-        print_uart0(string);
+        prettyPrint(i, data, 1);
         data += INCREMENT;
     }
 
+    print_uart0("\n");
+
     for (int i = 0; i < 3; i++) {
         readData(&APB_bus, &data, i);
-        print_uart0("Data: ");
-        print_uint32_uart0(data);
-        print_uart0(" received from address ");
-        char string[] = "0\n";
-        string[0] = '0' + i;
-        print_uart0(string);
+        prettyPrint(i, data, 0);
         data += INCREMENT;
     }
 }

@@ -3,10 +3,6 @@
 
 uint8_t currentState = 0;
 
-void resetStateMaster() {
-    currentState = 0;
-}
-
 uint8_t sendDataMaster(struct APB_Signals * APB_bus, uint32_t * data, uint32_t address) {
     switch (currentState) {
         case 0:
